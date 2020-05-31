@@ -7,8 +7,8 @@ class TelegramBot():
 
     def __init__(self):
 
-        self.token = os.environ.get('LAVANDA_TOKEN')
-        self.url = f'https://api.telegram.org/{self.token}'
+        self.token = os.environ.get('REMINDME_TOKEN')
+        self.url = f'https://api.telegram.org/bot{self.token}'
     
     def getMe(self):
         
@@ -30,7 +30,7 @@ class TelegramBot():
             print(e)
 
     def sendMessage(self, user_id, text, parse_mode = '', reply_markup = ''):
-
+        
         send_message_url = os.path.join(self.url, 'sendMessage')
         telegram_request = requests.post(send_message_url, data = {'chat_id': user_id, 'text': text, 'parse_mode': parse_mode, 'reply_markup': reply_markup})
         tracker_message= telegram_request.json()
