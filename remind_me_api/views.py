@@ -10,9 +10,9 @@ import asyncio
 import websockets, os
 
 if os.environ.get('DEBUG') == 'True':
-    websocket_uri = 'wss://remindme-scheduler.herokuapp.com/0.0.0.0'
+    websocket_uri = "ws://localhost:8765" 
 else:
-    websocket_uri = "ws://localhost:8765"
+    websocket_uri = 'wss://remindme-scheduler.herokuapp.com/0.0.0.0'
 
 
 async def new_redis_entry(user_id, time, content):
