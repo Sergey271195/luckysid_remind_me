@@ -7,7 +7,7 @@ from django.utils.decorators import method_decorator
 import json
 import datetime
 import asyncio
-import websockets
+import websockets, os
 
 if os.environ.get('DEBUG') == 'True':
     websocket_uri = 'wss://remindme-scheduler.herokuapp.com/0.0.0.0'
