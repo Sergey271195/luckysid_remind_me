@@ -1,4 +1,4 @@
-#!/home/sergey/Desktop/reminder/rem/bin/python3
+#!/home/sergey/Desktop/telegram/REMINDME_BOT/reminder/rem/bin/python3
 from django.core import management
 
 if __name__ == "__main__":

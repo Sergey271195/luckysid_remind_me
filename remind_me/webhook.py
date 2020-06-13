@@ -13,7 +13,7 @@ class Webhook():
         if os.environ.get('PRODUCTION') == 'True':
             url_path = 'https://remindme-scheduler-django.herokuapp.com'
         else:
-            url_path = 'https://a0ba78439fd0.ngrok.io'
+            url_path = 'https://1652a374924e.ngrok.io'
         
         print(f'Connecting to: {url_path}')
         set_url = os.path.join(self.url, 'setWebhook')

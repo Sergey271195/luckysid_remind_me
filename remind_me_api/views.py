@@ -42,6 +42,15 @@ async def send_message_to_websocket(user_id, message):
         status = await websocket.recv()
         print('Status', status)
 
+async def send_reply_message_to_websocket(user_id, message):
+    uri = websocket_uri
+    async with websockets.connect(uri) as websocket:
+        dict_to_send = {'data': {'type':'reply_message', 'user_id': user_id, 'message': message}}
+        await websocket.send(json.dumps(dict_to_send))
+        print('Message to websocket is sent!')
+        status = await websocket.recv()
+        print('Status', status)
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class RemindMeApiView(View):
@@ -55,8 +64,11 @@ class RemindMeApiView(View):
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         request_body = json.loads(request.body)
-
+        print(request_body)
         message = request_body.get('message')
+        callback_query = request_body.get('callback_query')
+
+        print(message)
 
         if message:
             user_id = message['chat'].get('id')
@@ -66,6 +78,28 @@ class RemindMeApiView(View):
             else:
                 task = request_body.get('text')              
                 asyncio.get_event_loop().run_until_complete(send_message_to_websocket(user_id, task))
+
+        elif callback_query:
+            user_id = callback_query['message']['chat'].get('id')
+            reply_to_message = callback_query['message']['text']
+            if 'Set' in reply_to_message:
+                data = callback_query['data']
+                if data != 'no':
+                    asyncio.get_event_loop().run_until_complete(send_reply_message_to_websocket(user_id, 'add.'+data))
+            elif 'Alter' in reply_to_message:
+                data = callback_query['data']
+                if data != 'no':
+                    asyncio.get_event_loop().run_until_complete(send_reply_message_to_websocket(user_id, 'alter.'+data))
+            elif 'Delete' in reply_to_message:
+                data = callback_query['data']
+                if data != 'no':
+                    asyncio.get_event_loop().run_until_complete(send_reply_message_to_websocket(user_id, 'remove.'+data))
+            elif 'Shift' in reply_to_message:
+                data = callback_query['data']
+                if data != 'no':
+                    asyncio.get_event_loop().run_until_complete(send_reply_message_to_websocket(user_id, 'move.'+data))
+
+
 
         return JsonResponse({'status_code': 200})
 
